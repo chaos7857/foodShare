@@ -10,3 +10,23 @@ spring:
     url: jdbc:mysql://localhost:3306
     username: root
     password: 1234
+
+knife4j:
+  enable: true
+  openapi:
+    title: 接口文档
+    description: "校园美食周边分享系统的接口文档，用于更好的开发测试使用，以及接口查询以及辅助前端开发
+    本文档最终解释权归本人所有"
+    email: 173192386@qq.com
+    concat: 超越
+    url: 略
+    version: v0.0
+#    license: Apache 2.0
+#    license-url: https://stackoverflow.com/
+#    terms-of-service-url: https://stackoverflow.com/
+    group:
+      default:
+        group-name: 课程设计接口
+        api-rule: package
+        api-rule-resources:
+          - com.cc.backend.controller
