@@ -21,6 +21,13 @@
             <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
             <version>4.4.0</version>
         </dependency>
+<!--        https://baomidou.com/plugins/pagination/#%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95       -->
+<!--        分页查询        -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.12</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -46,6 +53,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cc</groupId>
+            <artifactId>xueBuTong-backend</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
