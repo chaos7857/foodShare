@@ -7,7 +7,7 @@ spring:
     name: food-share-backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306
+    url: jdbc:mysql://localhost:3306/foodShare
     username: root
     password: 1234
 
