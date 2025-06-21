@@ -1,6 +1,6 @@
 package com.cc.backend.controller;
 
-import com.cc.backend.model.dto.BaseResponse;
+import com.cc.backend.model.dto.common.BaseResponse;
 import com.cc.backend.model.vo.LoginUserVO;
 import com.cc.backend.service.UserService;
 import com.cc.backend.utils.ResultUtils;
@@ -44,6 +44,9 @@ public class UserController {
 
     /*
     * 批量添加用户*/
+
+    /*
+    * 查看用户列表*/
 
     /*
     * 删除用户（）*/

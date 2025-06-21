@@ -2,7 +2,7 @@ package com.cc.backend.utils;
 
 
 import com.cc.backend.exception.ErrorCode;
-import com.cc.backend.model.dto.BaseResponse;
+import com.cc.backend.model.dto.common.BaseResponse;
 
 public class ResultUtils {
     /*

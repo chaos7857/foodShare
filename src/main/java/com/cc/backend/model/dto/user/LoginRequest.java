@@ -1,4 +1,4 @@
-package com.cc.backend.model.dto;
+package com.cc.backend.model.dto.user;
 
 import lombok.Data;
 

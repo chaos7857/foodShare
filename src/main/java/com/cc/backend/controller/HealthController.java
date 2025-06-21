@@ -1,7 +1,7 @@
 package com.cc.backend.controller;
 
 
-import com.cc.backend.model.dto.BaseResponse;
+import com.cc.backend.model.dto.common.BaseResponse;
 import com.cc.backend.utils.ResultUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

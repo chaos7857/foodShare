@@ -1,7 +1,7 @@
 package com.cc.backend.exception;
 
 
-import com.cc.backend.model.dto.BaseResponse;
+import com.cc.backend.model.dto.common.BaseResponse;
 import com.cc.backend.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;

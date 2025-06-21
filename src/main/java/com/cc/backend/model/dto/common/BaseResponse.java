@@ -1,4 +1,4 @@
-package com.cc.backend.model.dto;
+package com.cc.backend.model.dto.common;
 
 
 import com.cc.backend.exception.ErrorCode;
