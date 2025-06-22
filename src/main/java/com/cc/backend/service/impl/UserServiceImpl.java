@@ -1,11 +1,16 @@
 package com.cc.backend.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cc.backend.constant.UserConstant;
+import com.cc.backend.exception.ErrorCode;
+import com.cc.backend.mapper.UserMapper;
 import com.cc.backend.model.entity.User;
 import com.cc.backend.model.vo.LoginUserVO;
 import com.cc.backend.service.UserService;
-import com.cc.backend.mapper.UserMapper;
+import com.cc.backend.utils.ThrowUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -21,13 +26,47 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService{
 
     @Override
-    public Long userRegister(String username, String password, String confirmPassword) {
+    public Long userRegister(String userAccount, String userPassword, String confirmPassword) {
         // 参数检验
+        ThrowUtils.throwIf(
+                StrUtil.hasBlank(userAccount, userPassword, confirmPassword),
+                ErrorCode.PARAMS_ERROR,"参数为空"
+        );
+        ThrowUtils.throwIf(
+                userAccount.length()<4,
+                ErrorCode.PARAMS_ERROR,"账号过短"
+        );
+        ThrowUtils.throwIf(
+                userPassword.length()<8,
+                ErrorCode.PARAMS_ERROR,"密码强调过低"
+        );
+        ThrowUtils.throwIf(
+                !userPassword.equals(confirmPassword),
+                ErrorCode.PARAMS_ERROR,"两次输入的密码不一致"
+        );
         // 确保userAccount不存在
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("userAccount", userAccount);
+        Long count = this.baseMapper.selectCount(userQueryWrapper);
+        ThrowUtils.throwIf(
+                count>0,
+                ErrorCode.PARAMS_ERROR,"账户已存在"
+        );
         // 密码加密
+        String encodedPassword = this.getEncodedPassword(userPassword);
         // 插入数据库
+        User user = new User();
+        user.setUserAccount(userAccount);
+        user.setUserPassword(encodedPassword);
+        user.setUserName(UserConstant.USER_NAME);
+        user.setUserRole(UserConstant.ROLE_USER);
+        boolean saveRes = this.save(user);
+        ThrowUtils.throwIf(
+                !saveRes,
+                ErrorCode.SYSTEM_ERROR,"注册失败，数据库错误"
+        );
         // 返回userId
-        return 0L;
+        return user.getId();
     }
 
     @Override
@@ -66,7 +105,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /*
     * 密码加密*/
-    public static String getEncodedPassword(String password) {
+    @Override
+    public String getEncodedPassword(String password) {
         final String SALT = "hfutdevcc";
         return DigestUtils.md5DigestAsHex((SALT + password).getBytes());
     }

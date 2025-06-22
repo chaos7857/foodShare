@@ -23,6 +23,7 @@ public class UserController {
 
     /*
     * 注册*/
+    @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody RegisterRequest registerRequest) {
         ThrowUtils.throwIf(registerRequest==null, ErrorCode.PARAMS_ERROR);
         String userAccount = registerRequest.getUserAccount();
