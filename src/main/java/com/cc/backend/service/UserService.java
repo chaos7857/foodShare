@@ -16,8 +16,10 @@ public interface UserService extends IService<User> {
     public User userLogin(String username, String password, HttpServletRequest request);
     public User getLoginUser(HttpServletRequest request);
     public String userLogout(HttpServletRequest request);
-
     public Long addUser(String userAccount, String userName);
+
+
+
     public String getEncodedPassword(String password);
     LoginUserVO getLoginUserVO(User user);
 }
