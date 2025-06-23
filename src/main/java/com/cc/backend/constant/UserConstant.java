@@ -14,4 +14,6 @@ public interface UserConstant {
     public static final String LOGIN_USER = "LOGIN_USER";
     public static final String SAY_GOOD_BY = "see you!";
 
+    public static final String DEV_ROLE = "dev";
+    public static final String ADMIN_ROLE = "admin";
 }
