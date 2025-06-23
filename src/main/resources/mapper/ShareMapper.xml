@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.backend.mapper.ShareMapper">
+
+    <resultMap id="BaseResultMap" type="com.cc.backend.model.entity.Share">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="shareTitle" column="shareTitle" jdbcType="VARCHAR"/>
+            <result property="shareDetail" column="shareDetail" jdbcType="VARCHAR"/>
+            <result property="sharePicture" column="sharePicture" jdbcType="VARCHAR"/>
+            <result property="shareTags" column="shareTags" jdbcType="VARCHAR"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
+            <result property="shareClickNum" column="shareClickNum" jdbcType="BIGINT"/>
+            <result property="shareLike" column="shareLike" jdbcType="BIGINT"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,shareTitle,shareDetail,sharePicture,shareTags,userId,
+        shareClickNum,shareLike,createTime,updateTime,isDelete
+    </sql>
+</mapper>

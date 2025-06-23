@@ -18,8 +18,8 @@ public class HealthController {
     }
 
     @RequireRole()
-    @GetMapping("/health/common")
-    public BaseResponse<String> loginHealthCheck(){
+    @GetMapping("/health/user")
+    public BaseResponse<String> userHealthCheck(){
         return ResultUtils.success("OK");
     }
 
