@@ -15,12 +15,15 @@ import com.cc.backend.service.ShareService;
 import com.cc.backend.service.UserService;
 import com.cc.backend.utils.ResultUtils;
 import com.cc.backend.utils.ThrowUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 @RestController
 @RequestMapping("/share")
@@ -85,7 +88,22 @@ public class ShareController {
 
     /*
     * 查看通过审核的公开分享(这里应该做防护)*/
+    @PostMapping("/list/public")
+    public BaseResponse<Page<Share>> listPublicShare(@RequestBody PageRequest pageRequest){
+        long current = pageRequest.getCurrent();
+        long size = pageRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 审核模块做好前就是查询所有的内容，优化点和上一个一样，当然，还需要优化一下参数传递实现模糊查询
+        Page<Share> picturePage = shareService.page(new Page<>(current, size));
+        return ResultUtils.success(picturePage);
+    }
 
+    /*
+    * 图片走另一个接口*/
+
+    /*
+    * 带缓存的查询方法*/
 
     /*
     * 查看分享的信息详情 */
@@ -97,7 +115,8 @@ public class ShareController {
     /// ////////////////////////////////////////
 
     /*
-    * 信息审核*/
+    * 管理员发布（不需要审核内容）
+    * 管理员需不需要发布功能呢*/
 
 
     /*
@@ -109,7 +128,18 @@ public class ShareController {
     @RequireRole(userRole = UserConstant.DEV_ROLE)
     @PostMapping("/upload")
     public BaseResponse<String> uploadFile(@RequestPart("file") MultipartFile file,
-                                           @ModelAttribute AddRequest addRequest) {
+                                           @ModelAttribute AddRequest addRequest,
+                                           HttpServletRequest request) {
+        User dev = (User) request.getSession().getAttribute(UserConstant.LOGIN_USER);
         return ResultUtils.success("uuid");
+    }
+
+
+    @RequireRole(userRole = UserConstant.DEV_ROLE)
+    @GetMapping("/test/path")
+    public BaseResponse<String> pathTest() throws FileNotFoundException {
+        URL resource = ResourceUtils.getURL("classpath:static");
+        File file = new File(resource.getPath());
+        return ResultUtils.success(file.getAbsolutePath());
     }
 }

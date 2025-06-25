@@ -1,5 +1,5 @@
 .idea/
-upload/**
+src/main/resources/static/upload/**
 #######################################
 HELP.md
 target/

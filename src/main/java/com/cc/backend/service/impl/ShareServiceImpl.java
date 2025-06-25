@@ -13,7 +13,6 @@ import com.cc.backend.utils.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -37,6 +36,12 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share>
     @Resource
     private TransactionTemplate transactionTemplate;
 
+    @Resource
+    public String pictureDir;
+
+    @Resource
+    private String recycleDir;
+
     @Override
     public Long addShare(AddRequest addRequest, MultipartFile picture, Long userId) throws FileNotFoundException {
         // 参数校验
@@ -57,24 +62,18 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share>
                     ErrorCode.PARAMS_ERROR,
                     "图片格式异常"
             );
+
             String suffix = "";
             if (originalFilename!=null){
                 suffix = originalFilename.substring(originalFilename.lastIndexOf(".")+1);
             }else {
                 suffix = contentType.split("/")[1];
             }
-            File path = new File(ResourceUtils.getURL("classpath:").getPath());
-            if(!path.exists()) {
-                path = new File("");
-            }
-            File upload = new File(path.getAbsolutePath(),"/upload/");
-            if(!upload.exists()) {
-                upload.mkdirs();
-            }
+
             String fileUrl = UUID.fastUUID() +"."+suffix;
             share.setSharePicture(fileUrl);
 
-            dest = new File(upload.getAbsolutePath()+"/"+fileUrl);
+            dest = new File(pictureDir+"/"+fileUrl);
         } else {
             dest = null;
         }
@@ -118,6 +117,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share>
                         && !oldShare.getUserId().equals(userId),
                 ErrorCode.NO_AUTH_ERROR
         );
+
         String sharePicture = oldShare.getSharePicture();
         // 删除
         // TODO（cc):这里有些可以拿出来
@@ -127,18 +127,8 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share>
             // 删除图片（移动到回收站保留）
             if (sharePicture != null) {
                 try {
-                    File path = new File(ResourceUtils.getURL("classpath:").getPath());
-                    if(!path.exists()) {
-                        path = new File("");
-                    }
-                    File upload = new File(path.getAbsolutePath(),"/upload/");
-                    File originFile = new File(upload.getAbsolutePath()+"/"+sharePicture);
-
-                    File recycleDir = new File(upload.getAbsolutePath(), "/recycle/");
-                    if (!recycleDir.exists()) {
-                        recycleDir.mkdirs();
-                    }
-                    File destFile = new File(recycleDir.getAbsolutePath() + "/" + sharePicture);
+                    File originFile = new File(pictureDir+"/"+sharePicture);
+                    File destFile = new File(recycleDir + "/" + sharePicture);
                     if (originFile.exists()) {
                         Files.move(originFile.toPath(), destFile.toPath(),
                                 StandardCopyOption.REPLACE_EXISTING);
