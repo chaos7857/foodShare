@@ -16,7 +16,7 @@ public class FilePathConfig {
         File path = new File(ResourceUtils.getURL("classpath:static").getPath());
         if(!path.exists()) {
             log.error("not found {}", path.getAbsolutePath());
-            path = new File("src/main/resources/static");
+            path = new File("src/main/resources");
             log.error("has created {}", path.getAbsolutePath());
         }
         File upload = new File(path.getAbsolutePath(),"/upload/");
