@@ -7,6 +7,6 @@ import java.io.Serializable;
 @Data
 public class AddReviewRequest implements Serializable {
     private Long shareId;
-    private String reviewStatus;
+    private Integer reviewStatus;
     private String reviewMessage;
 }
