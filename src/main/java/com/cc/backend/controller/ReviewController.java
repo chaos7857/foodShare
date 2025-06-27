@@ -14,14 +14,12 @@ import com.cc.backend.service.ShareService;
 import com.cc.backend.utils.ResultUtils;
 import com.cc.backend.utils.ThrowUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/review")
@@ -80,6 +78,17 @@ public class ReviewController {
 
     /*
     * 查询某个share的所有审核信息*/
+    @RequireRole
+    @PostMapping("/page/all")
+    public BaseResponse<List<Review>> listAllReview(@RequestParam Long shareId){
+        Share share = shareService.getById(shareId);
+        String reviewIdStr = share.getReviewId();
+        // TODO(CC):优化点，修改为分页查询
+        List<Review> collect = JSONUtil.toList(reviewIdStr, Long.class).stream()
+                .map(reviewId -> reviewService.getById(reviewId))
+                .collect(Collectors.toList());
+        return ResultUtils.success(collect);
+    }
 
 
 
