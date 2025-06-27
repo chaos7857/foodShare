@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cc.backend.constant.UserConstant;
 import com.cc.backend.exception.ErrorCode;
 import com.cc.backend.mapper.ShareMapper;
-import com.cc.backend.model.dto.share.AddRequest;
+import com.cc.backend.model.dto.share.AddShareRequest;
 import com.cc.backend.model.entity.Share;
 import com.cc.backend.model.vo.ShareVO;
 import com.cc.backend.service.ShareService;
@@ -47,12 +47,12 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share>
     private String recycleDir;
 
     @Override
-    public Long addShare(AddRequest addRequest, MultipartFile picture, Long userId) throws FileNotFoundException {
+    public Long addShare(AddShareRequest addShareRequest, MultipartFile picture, Long userId) throws FileNotFoundException {
         // 参数校验
-        String title = addRequest.getTitle();
+        String title = addShareRequest.getTitle();
         ThrowUtils.throwIf(title == null, ErrorCode.PARAMS_ERROR);
-        String detail = addRequest.getDetail();
-        List<String> tags = addRequest.getTags();
+        String detail = addShareRequest.getDetail();
+        List<String> tags = addShareRequest.getTags();
         String tagsStr = JSONUtil.toJsonStr(tags);
         // 如果有图片就保存图片并返回url
         // 校验图片格式

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 @Data
-public class UpdateRequest implements Serializable {
+public class UpdateShareRequest implements Serializable {
     private Long id;
     private String shareTitle;
     private String shareDetail;

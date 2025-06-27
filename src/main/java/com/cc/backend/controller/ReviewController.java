@@ -1,10 +1,27 @@
 package com.cc.backend.controller;
 
+import cn.hutool.json.JSONUtil;
+import com.cc.backend.annotation.RequireRole;
+import com.cc.backend.constant.UserConstant;
+import com.cc.backend.exception.ErrorCode;
+import com.cc.backend.model.dto.common.BaseResponse;
+import com.cc.backend.model.dto.review.AddReviewRequest;
+import com.cc.backend.model.entity.Review;
+import com.cc.backend.model.entity.Share;
+import com.cc.backend.model.entity.User;
 import com.cc.backend.service.ReviewService;
+import com.cc.backend.service.ShareService;
+import com.cc.backend.utils.ResultUtils;
+import com.cc.backend.utils.ThrowUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/review")
@@ -12,13 +29,41 @@ public class ReviewController {
     @Resource
     private ReviewService reviewService;
 
+    @Resource
+    private ShareService shareService;
+
     /// /////////////////////////////////////////
     ///             管理员权限                 ///
     /// ////////////////////////////////////////
 
     /*
     * 对未审核数据进行审核*/
+    @PostMapping("/add")
+    @RequireRole(userRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Long> addReview(@RequestBody AddReviewRequest addReviewRequest,
+                                        HttpServletRequest request) {
+        Long shareId = addReviewRequest.getShareId();
+        Share share = shareService.getById(shareId);
 
+        ThrowUtils.throwIf(share == null, ErrorCode.PARAMS_ERROR);
+
+        User user = (User) request.getSession().getAttribute(UserConstant.LOGIN_USER);
+        Long userId = user.getId();
+        Review review = new Review();
+        BeanUtils.copyProperties(addReviewRequest, review);
+        review.setUserId(userId);
+        reviewService.save(review);
+
+        Long reviewId = review.getId();
+
+        String reviewId1 = share.getReviewId();
+        List<String> list = JSONUtil.toList(reviewId1, String.class);
+        list.add(String.valueOf(reviewId));
+        share.setReviewId(JSONUtil.toJsonStr(list));
+        shareService.updateById(share);
+
+        return ResultUtils.success(reviewId);
+    }
 
     /*
     * 删除审核记录（这个不太合理）*/

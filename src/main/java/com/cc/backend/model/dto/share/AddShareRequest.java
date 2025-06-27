@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class AddRequest implements Serializable {
+public class AddShareRequest implements Serializable {
     private String title;
     private String detail;
     private List<String> tags;

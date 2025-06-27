@@ -9,8 +9,8 @@ import com.cc.backend.exception.ErrorCode;
 import com.cc.backend.model.dto.common.BaseResponse;
 import com.cc.backend.model.dto.common.DeleteRequest;
 import com.cc.backend.model.dto.common.PageRequest;
-import com.cc.backend.model.dto.share.AddRequest;
-import com.cc.backend.model.dto.share.UpdateRequest;
+import com.cc.backend.model.dto.share.AddShareRequest;
+import com.cc.backend.model.dto.share.UpdateShareRequest;
 import com.cc.backend.model.entity.Share;
 import com.cc.backend.model.entity.User;
 import com.cc.backend.model.vo.ShareVO;
@@ -46,11 +46,11 @@ public class ShareController {
     @PostMapping("/add")
     @RequireRole
     public BaseResponse<Long> addShare(@RequestPart MultipartFile file,
-                                       @ModelAttribute AddRequest addRequest,
+                                       @ModelAttribute AddShareRequest addShareRequest,
                                        HttpServletRequest request) throws FileNotFoundException {
         User user = userService.getLoginUser(request);
         Long userId = user.getId();
-        Long shareId = shareService.addShare(addRequest, file, userId);
+        Long shareId = shareService.addShare(addShareRequest, file, userId);
         return ResultUtils.success(shareId);
     }
 
@@ -73,14 +73,14 @@ public class ShareController {
     * 修改*/
     @RequireRole
     @PostMapping("/update")
-    public BaseResponse<String> updateShare(@RequestBody UpdateRequest updateRequest,
+    public BaseResponse<String> updateShare(@RequestBody UpdateShareRequest updateShareRequest,
                                             HttpServletRequest request){
         ThrowUtils.throwIf(
-                updateRequest == null,
+                updateShareRequest == null,
                 ErrorCode.PARAMS_ERROR
         );
 
-        Long shareId = updateRequest.getId();
+        Long shareId = updateShareRequest.getId();
         Share oldShare = shareService.getById(shareId);
 
         Long userId = oldShare.getUserId();
@@ -94,7 +94,7 @@ public class ShareController {
         );
         // TODO（cc）:tags需要转换
         // 图片暂时不允许更新
-        BeanUtil.copyProperties(updateRequest, oldShare);
+        BeanUtil.copyProperties(updateShareRequest, oldShare);
 
         shareService.updateById(oldShare);
         return ResultUtils.success("ok");
@@ -166,7 +166,7 @@ public class ShareController {
     @RequireRole(userRole = UserConstant.DEV_ROLE)
     @PostMapping("/upload")
     public BaseResponse<String> uploadFile(@RequestPart("file") MultipartFile file,
-                                           @ModelAttribute AddRequest addRequest,
+                                           @ModelAttribute AddShareRequest addShareRequest,
                                            HttpServletRequest request) {
         User dev = (User) request.getSession().getAttribute(UserConstant.LOGIN_USER);
         return ResultUtils.success("uuid");
