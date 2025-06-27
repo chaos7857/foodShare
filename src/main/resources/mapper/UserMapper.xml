@@ -15,13 +15,10 @@
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
-            <result property="reviewId" column="reviewId" jdbcType="BIGINT"/>
-            <result property="lastReviewStatus" column="lastReviewStatus" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,userAccount,userPassword,userName,userRole,userAvatar,
-        userDescription,createTime,updateTime,isDelete,reviewId,
-        lastReviewStatus
+        userDescription,createTime,updateTime,isDelete
     </sql>
 </mapper>
