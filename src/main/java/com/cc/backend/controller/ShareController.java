@@ -1,5 +1,7 @@
 package com.cc.backend.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cc.backend.annotation.RequireRole;
@@ -11,6 +13,7 @@ import com.cc.backend.model.dto.common.PageRequest;
 import com.cc.backend.model.dto.share.AddRequest;
 import com.cc.backend.model.entity.Share;
 import com.cc.backend.model.entity.User;
+import com.cc.backend.model.vo.ShareVO;
 import com.cc.backend.service.ShareService;
 import com.cc.backend.service.UserService;
 import com.cc.backend.utils.ResultUtils;
@@ -24,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/share")
@@ -53,7 +58,7 @@ public class ShareController {
     * 删除*/
     @RequireRole
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteShare(@RequestBody DeleteRequest deleteRequest,
+    public BaseResponse<String> deleteShare(@RequestBody DeleteRequest deleteRequest,
                                              HttpServletRequest request){
         ThrowUtils.throwIf(deleteRequest == null, ErrorCode.PARAMS_ERROR);
         Long shareId = deleteRequest.getId();
@@ -61,7 +66,7 @@ public class ShareController {
         Long userId = user.getId();
         String userRole = user.getUserRole();
         shareService.deleteShare(shareId, userId, userRole);
-        return ResultUtils.success(true);
+        return ResultUtils.success("ok");
     }
 
     /*
@@ -72,7 +77,7 @@ public class ShareController {
     * 查看自己的分享*/
     @RequireRole
     @PostMapping("/list/my")
-    public BaseResponse<Page<Share>> listMyShare(@RequestBody PageRequest pageRequest,
+    public BaseResponse<Page<ShareVO>> listMyShare(@RequestBody PageRequest pageRequest,
                                             HttpServletRequest request){
         long current = pageRequest.getCurrent();
         long size = pageRequest.getPageSize();
@@ -80,10 +85,28 @@ public class ShareController {
         Long userId = user.getId();
         QueryWrapper<Share> shareQueryWrapper = new QueryWrapper<>();
         shareQueryWrapper.eq("userId", userId);
-        Page<Share> picturePage = shareService.page(new Page<>(current, size),
+        Page<Share> sharePage = shareService.page(new Page<>(current, size),
                 shareQueryWrapper);
         // TODO(cc):这里返回的应该要变一下：1、tags改成列表；2、去掉逻辑删除
-        return ResultUtils.success(picturePage);
+        List<ShareVO> shareVOs = sharePage.getRecords().stream()
+                .map(share -> {
+                    String shareTags = share.getShareTags();
+                    List<String> list = JSONUtil.toList(shareTags, String.class);
+                    ShareVO shareVO = new ShareVO();
+                    BeanUtil.copyProperties(share, shareVO);
+                    shareVO.setShareTags(list);
+                    return shareVO;
+                })
+                .collect(Collectors.toList());
+
+        Page<ShareVO> shareVOPage = new Page<>(
+                sharePage.getCurrent(),    // 当前页
+                sharePage.getSize(),       // 每页大小
+                sharePage.getTotal()       // 总记录数
+        );
+        shareVOPage.setRecords(shareVOs);
+
+        return ResultUtils.success(shareVOPage);
     }
 
     /*
