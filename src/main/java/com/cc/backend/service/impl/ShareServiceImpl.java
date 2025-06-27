@@ -1,13 +1,16 @@
 package com.cc.backend.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cc.backend.constant.UserConstant;
 import com.cc.backend.exception.ErrorCode;
 import com.cc.backend.mapper.ShareMapper;
 import com.cc.backend.model.dto.share.AddRequest;
 import com.cc.backend.model.entity.Share;
+import com.cc.backend.model.vo.ShareVO;
 import com.cc.backend.service.ShareService;
 import com.cc.backend.utils.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * @author Admin
@@ -139,6 +143,28 @@ public class ShareServiceImpl extends ServiceImpl<ShareMapper, Share>
             }
             return true;
         });
+    }
+
+    @Override
+    public Page<ShareVO> entity2VO(Page<Share> sharePage){
+        List<ShareVO> shareVOs = sharePage.getRecords().stream()
+                .map(share -> {
+                    String shareTags = share.getShareTags();
+                    List<String> list = JSONUtil.toList(shareTags, String.class);
+                    ShareVO shareVO = new ShareVO();
+                    BeanUtil.copyProperties(share, shareVO);
+                    shareVO.setShareTags(list);
+                    return shareVO;
+                })
+                .collect(Collectors.toList());
+
+        Page<ShareVO> shareVOPage = new Page<>(
+                sharePage.getCurrent(),
+                sharePage.getSize(),
+                sharePage.getTotal()
+        );
+        shareVOPage.setRecords(shareVOs);
+        return shareVOPage;
     }
 }
 

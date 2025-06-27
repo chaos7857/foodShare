@@ -1,7 +1,6 @@
 package com.cc.backend.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cc.backend.annotation.RequireRole;
@@ -11,6 +10,7 @@ import com.cc.backend.model.dto.common.BaseResponse;
 import com.cc.backend.model.dto.common.DeleteRequest;
 import com.cc.backend.model.dto.common.PageRequest;
 import com.cc.backend.model.dto.share.AddRequest;
+import com.cc.backend.model.dto.share.UpdateRequest;
 import com.cc.backend.model.entity.Share;
 import com.cc.backend.model.entity.User;
 import com.cc.backend.model.vo.ShareVO;
@@ -18,6 +18,7 @@ import com.cc.backend.service.ShareService;
 import com.cc.backend.service.UserService;
 import com.cc.backend.utils.ResultUtils;
 import com.cc.backend.utils.ThrowUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/share")
 public class ShareController {
@@ -71,6 +71,34 @@ public class ShareController {
 
     /*
     * 修改*/
+    @RequireRole
+    @PostMapping("/update")
+    public BaseResponse<String> updateShare(@RequestBody UpdateRequest updateRequest,
+                                            HttpServletRequest request){
+        ThrowUtils.throwIf(
+                updateRequest == null,
+                ErrorCode.PARAMS_ERROR
+        );
+
+        Long shareId = updateRequest.getId();
+        Share oldShare = shareService.getById(shareId);
+
+        Long userId = oldShare.getUserId();
+        User user = (User)request.getSession().getAttribute(UserConstant.LOGIN_USER);
+        Long loginUserId = user.getId();
+        String userRole = user.getUserRole();
+
+        ThrowUtils.throwIf(
+                !userId.equals(loginUserId) && UserConstant.USER_ROLE.equals(userRole),
+                ErrorCode.NO_AUTH_ERROR
+        );
+        // TODO（cc）:tags需要转换
+        // 图片暂时不允许更新
+        BeanUtil.copyProperties(updateRequest, oldShare);
+
+        shareService.updateById(oldShare);
+        return ResultUtils.success("ok");
+    }
 
 
     /*
@@ -87,24 +115,8 @@ public class ShareController {
         shareQueryWrapper.eq("userId", userId);
         Page<Share> sharePage = shareService.page(new Page<>(current, size),
                 shareQueryWrapper);
-        // TODO(cc):这里返回的应该要变一下：1、tags改成列表；2、去掉逻辑删除
-        List<ShareVO> shareVOs = sharePage.getRecords().stream()
-                .map(share -> {
-                    String shareTags = share.getShareTags();
-                    List<String> list = JSONUtil.toList(shareTags, String.class);
-                    ShareVO shareVO = new ShareVO();
-                    BeanUtil.copyProperties(share, shareVO);
-                    shareVO.setShareTags(list);
-                    return shareVO;
-                })
-                .collect(Collectors.toList());
-
-        Page<ShareVO> shareVOPage = new Page<>(
-                sharePage.getCurrent(),    // 当前页
-                sharePage.getSize(),       // 每页大小
-                sharePage.getTotal()       // 总记录数
-        );
-        shareVOPage.setRecords(shareVOs);
+        // 这里返回的应该要变一下：1、tags改成列表；2、去掉逻辑删除
+        Page<ShareVO> shareVOPage = shareService.entity2VO(sharePage);
 
         return ResultUtils.success(shareVOPage);
     }
@@ -112,14 +124,17 @@ public class ShareController {
     /*
     * 查看通过审核的公开分享(这里应该做防护)*/
     @PostMapping("/list/public")
-    public BaseResponse<Page<Share>> listPublicShare(@RequestBody PageRequest pageRequest){
+    public BaseResponse<Page<ShareVO>> listPublicShare(@RequestBody PageRequest pageRequest){
         long current = pageRequest.getCurrent();
         long size = pageRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 审核模块做好前就是查询所有的内容，优化点和上一个一样，当然，还需要优化一下参数传递实现模糊查询
-        Page<Share> picturePage = shareService.page(new Page<>(current, size));
-        return ResultUtils.success(picturePage);
+        QueryWrapper<Share> shareQueryWrapper = new QueryWrapper<>();
+        shareQueryWrapper.eq("lastReviewStatus", "1");
+        Page<Share> sharePage = shareService.page(new Page<>(current, size), shareQueryWrapper);
+        Page<ShareVO> shareVOPage = shareService.entity2VO(sharePage);
+        return ResultUtils.success(shareVOPage);
     }
 
     /*
