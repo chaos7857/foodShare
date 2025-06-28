@@ -42,18 +42,20 @@ public class ReviewController {
     @RequireRole(userRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Long> addReview(@RequestBody AddReviewRequest addReviewRequest,
                                         HttpServletRequest request) {
+        // 获取用户信息
         User user = (User) request.getSession().getAttribute(UserConstant.LOGIN_USER);
         Long userId = user.getId();
         Long shareId = addReviewRequest.getShareId();
         Share share = shareService.getById(shareId);
 
         ThrowUtils.throwIf(share == null, ErrorCode.PARAMS_ERROR);
-
+        // 保存审核记录
         Review review = new Review();
         BeanUtils.copyProperties(addReviewRequest, review);
         review.setUserId(userId);
         reviewService.save(review);
-
+        // 调整分享的信息
+        // TODO（CC）：理论上这里需要将图片换一个文件夹，由于都是静态资源移动没啥意义暂时不做
         Long reviewId = review.getId();
         Integer reviewStatus = review.getReviewStatus();
 
@@ -63,22 +65,9 @@ public class ReviewController {
         share.setReviewId(JSONUtil.toJsonStr(list));
         share.setLastReviewStatus(reviewStatus);
         shareService.updateById(share);
-
+        // 返回审核记录的id
         return ResultUtils.success(reviewId);
     }
-
-    /*
-    * 删除审核记录（这个不太合理）*/
-
-
-    /*
-    * 更新审核（这里通过新增一条审核来更新share的审核状态）*/
-
-
-    /*
-    * 查询所有未审核*/
-
-
 
     /*
     * 查询某个share的所有审核信息*/
