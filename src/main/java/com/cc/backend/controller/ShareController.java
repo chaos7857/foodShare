@@ -34,7 +34,7 @@ import java.net.URL;
 @RestController
 @RequestMapping("/share")
 public class ShareController {
-    /*分享接口*/
+    /*分享模块*/
 
     @Resource
     private ShareService shareService;

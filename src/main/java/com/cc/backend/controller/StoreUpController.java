@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/storeup")
 public class StoreUpController {
+    /*收藏模块*/
+
     @Resource
     StoreupService storeupService;
 
