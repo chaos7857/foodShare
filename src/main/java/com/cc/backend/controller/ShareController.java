@@ -10,6 +10,7 @@ import com.cc.backend.model.dto.common.BaseResponse;
 import com.cc.backend.model.dto.common.DeleteRequest;
 import com.cc.backend.model.dto.common.PageRequest;
 import com.cc.backend.model.dto.share.AddShareRequest;
+import com.cc.backend.model.dto.share.QueryByRSRequest;
 import com.cc.backend.model.dto.share.UpdateShareRequest;
 import com.cc.backend.model.entity.Share;
 import com.cc.backend.model.entity.User;
@@ -124,14 +125,15 @@ public class ShareController {
     /*
     * 查看通过审核的公开分享(这里应该做防护)*/
     @PostMapping("/list/public")
-    public BaseResponse<Page<ShareVO>> listPublicShare(@RequestBody PageRequest pageRequest){
-        long current = pageRequest.getCurrent();
-        long size = pageRequest.getPageSize();
+    public BaseResponse<Page<ShareVO>> listShareByRS(@RequestBody QueryByRSRequest query){
+        long current = query.getCurrent();
+        long size = query.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 审核模块做好前就是查询所有的内容，优化点和上一个一样，当然，还需要优化一下参数传递实现模糊查询
         QueryWrapper<Share> shareQueryWrapper = new QueryWrapper<>();
-        shareQueryWrapper.eq("lastReviewStatus", "1");
+        int reviewStatus = query.getReviewStatus();
+        shareQueryWrapper.eq("lastReviewStatus", reviewStatus);
         Page<Share> sharePage = shareService.page(new Page<>(current, size), shareQueryWrapper);
         Page<ShareVO> shareVOPage = shareService.entity2VO(sharePage);
         return ResultUtils.success(shareVOPage);

@@ -40,24 +40,26 @@ public class ReviewController {
     @RequireRole(userRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Long> addReview(@RequestBody AddReviewRequest addReviewRequest,
                                         HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute(UserConstant.LOGIN_USER);
+        Long userId = user.getId();
         Long shareId = addReviewRequest.getShareId();
         Share share = shareService.getById(shareId);
 
         ThrowUtils.throwIf(share == null, ErrorCode.PARAMS_ERROR);
 
-        User user = (User) request.getSession().getAttribute(UserConstant.LOGIN_USER);
-        Long userId = user.getId();
         Review review = new Review();
         BeanUtils.copyProperties(addReviewRequest, review);
         review.setUserId(userId);
         reviewService.save(review);
 
         Long reviewId = review.getId();
+        Integer reviewStatus = review.getReviewStatus();
 
         String reviewId1 = share.getReviewId();
         List<String> list = JSONUtil.toList(reviewId1, String.class);
         list.add(String.valueOf(reviewId));
         share.setReviewId(JSONUtil.toJsonStr(list));
+        share.setLastReviewStatus(reviewStatus);
         shareService.updateById(share);
 
         return ResultUtils.success(reviewId);
