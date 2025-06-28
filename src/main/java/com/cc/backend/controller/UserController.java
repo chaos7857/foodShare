@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
     /*用户模块*/
+
     @Resource
     private UserService userService;
 
