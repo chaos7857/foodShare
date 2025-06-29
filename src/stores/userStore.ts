@@ -1,6 +1,7 @@
 import {ref} from 'vue'
 import {defineStore} from 'pinia'
 import { getLoginUserUsingGet } from '@/api/userController.ts'
+import { message } from 'ant-design-vue'
 
 export const userStore = defineStore('loginUser', () => {
   const loginUser = ref<any>({
@@ -11,6 +12,8 @@ export const userStore = defineStore('loginUser', () => {
     const res = await getLoginUserUsingGet();
     if (res.code === 0 && res.data) {
       loginUser.value = res.data;
+    }else {
+      message.info("未登录");
     }
     // 测试用户登录，3 秒后自动登录
     // setTimeout(() => {

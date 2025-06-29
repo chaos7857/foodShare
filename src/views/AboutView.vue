@@ -10,8 +10,5 @@
   h1{
     text-align: center;
   }
-  img{
-    margin: 0 10%;
-  }
 }
 </style>
