@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import GlobalHeader from '@/components/common/GlobalHeader.vue'
 // import { healthUsingGet } from '@/api/mainController.ts'
-import {useLoginUserStore} from "@/stores/loginUserStore.ts";
+import { userStore } from "@/stores/userStore.ts";
 
-const loginUserStore = useLoginUserStore()
-loginUserStore.fetchLoginUser()
+userStore().fetchLoginUser()
 
 // healthUsingGet().then((res) => {
 //   console.log(res)

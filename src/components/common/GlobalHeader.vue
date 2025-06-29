@@ -3,9 +3,7 @@ import { h, ref } from 'vue'
 import { HomeOutlined,GithubOutlined } from '@ant-design/icons-vue'
 import { MenuProps } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
-import { useLoginUserStore } from '@/stores/loginUserStore.ts'
-
-const loginUserStore = useLoginUserStore()
+import { userStore } from '@/stores/userStore.ts'
 
 const items = ref<MenuProps['items']>([
   {
@@ -77,8 +75,8 @@ const myProfile = ()=>{
 
       <a-col flex="120px">
         <div class="user-login-status">
-          <div v-if="loginUserStore.loginUser.id" @click="myProfile">
-            {{ loginUserStore.loginUser.userName ?? '无名' }}
+          <div v-if="userStore().loginUser.id" @click="myProfile">
+            {{ userStore().loginUser.userName ?? '无名' }}
           </div>
           <div v-else>
             <a-button type="primary" href="/user/login">登录</a-button>
