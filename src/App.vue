@@ -18,7 +18,7 @@ userStore().fetchLoginUser()
     </a-layout-header>
     <a-layout>
       <a-layout-sider class="sider">
-        <a-button type="primary"
+        <a-button type="text"
                   shape="round"
                   danger
         class="publish-button"
