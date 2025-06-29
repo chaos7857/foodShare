@@ -43,7 +43,7 @@ knife4j:
 #    terms-of-service-url: https://stackoverflow.com/
     group:
       default:
-        group-name: 课程设计接口
+        group-name: default
         api-rule: package
         api-rule-resources:
           - com.cc.backend.controller
