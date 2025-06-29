@@ -18,8 +18,6 @@ const formState = reactive<FormState>({
 });
 const onFinish = async (values: any) => {
   const res = await userLoginUsingPost(values);
-  console.log(values)
-  console.log(res)
   if (res.code === 0 && res.data) {
     await userStore().fetchLoginUser()
     message.success('登录成功')

@@ -75,9 +75,13 @@ const myProfile = ()=>{
 
       <a-col flex="120px">
         <div class="user-login-status">
-          <div v-if="userStore().loginUser.id" @click="myProfile">
+<!--          <div v-if="userStore().loginUser.id" @click="myProfile">-->
+<!--            {{ userStore().loginUser.userName ?? '无名' }}-->
+<!--          </div>-->
+          <a-button type="text"
+                    v-if="userStore().loginUser.id" @click="myProfile">
             {{ userStore().loginUser.userName ?? '无名' }}
-          </div>
+          </a-button>
           <div v-else>
             <a-button type="primary" href="/user/login">登录</a-button>
           </div>
