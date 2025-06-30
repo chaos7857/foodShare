@@ -23,15 +23,43 @@ const router = createRouter({
       component: () => import('@/views/user/UserLoginView.vue'),
     },
     {
+      path: '/user/register',
+      name: '用户注册',
+      component: () => import('@/views/user/UserRegisterView.vue'),
+    },
+    {
       path: '/user/me',
       name: '用户信息',
       component: () => import('@/views/user/UserInfoView.vue'),
     },
-    // {
-    //   path: '/user/register',
-    //   name: '用户注册',
-    //   component: UserRegisterPage,
-    // },
+    {
+      path: '/share/publish',
+      name: '发布分享',
+      component: () => import('@/views/share/PublishShareView.vue'),
+    },
+    {
+      path: '/share/info/:id',
+      name: '发布详情',
+      component: () => import('@/views/share/ShareInfoView.vue'),
+      props: true,
+    },
+    {
+      path: '/share/my',
+      name: '我的分享',
+      component: () => import('@/views/share/ListMyShareView.vue'),
+      props: true,
+    },
+    {
+      path: '/admin/review',
+      name: '审核',
+      component: () => import('@/views/admin/ReviewShareView.vue'),
+    },
+    {
+      path: '/admin/manager',
+      name: '用户管理',
+      component: () => import('@/views/admin/ManageUserView.vue'),
+    },
+
   ],
 })
 

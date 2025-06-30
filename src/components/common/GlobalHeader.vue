@@ -47,9 +47,6 @@ const doMenuClick = ({ key }) => {
   })
 }
 
-const myProfile = ()=>{
-  router.push('/user/me')
-}
 </script>
 
 <template>
@@ -79,7 +76,7 @@ const myProfile = ()=>{
 <!--            {{ userStore().loginUser.userName ?? '无名' }}-->
 <!--          </div>-->
           <a-button type="text"
-                    v-if="userStore().loginUser.id" @click="myProfile">
+                    v-if="userStore().loginUser.id" @click="router.push('/user/me')">
             {{ userStore().loginUser.userName ?? '无名' }}
           </a-button>
           <div v-else>

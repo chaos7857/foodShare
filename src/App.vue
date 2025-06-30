@@ -3,6 +3,7 @@ import GlobalHeader from '@/components/common/GlobalHeader.vue'
 import { userStore } from "@/stores/userStore.ts";
 import { PlusCircleOutlined } from '@ant-design/icons-vue';
 import router from '@/router'
+import GlobalSider from '@/components/common/GlobalSider.vue'
 
 userStore().fetchLoginUser()
 
@@ -18,16 +19,7 @@ userStore().fetchLoginUser()
     </a-layout-header>
     <a-layout>
       <a-layout-sider class="sider">
-        <a-button type="text"
-                  shape="round"
-                  danger
-        class="publish-button"
-        @click="router.push('/publish')">
-          <template #icon>
-            <PlusCircleOutlined />
-          </template>
-          发布
-        </a-button>
+        <GlobalSider/>
       </a-layout-sider>
 
       <a-layout-content class="content">
@@ -57,12 +49,6 @@ userStore().fetchLoginUser()
     background: white;
     padding-left: 16px;
 
-    .publish-button{
-      margin-top: 160px;
-      width: 250px;
-      height: 100px;
-      font-size: 26px;
-    }
   }
   .content {
     padding: 20px;

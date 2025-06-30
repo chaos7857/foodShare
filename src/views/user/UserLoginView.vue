@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue'
 import { message } from 'ant-design-vue';
 import { userLoginUsingPost } from '@/api/userController.ts'
 import router from '@/router'
@@ -33,6 +33,9 @@ const onFinish = async (values: any) => {
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo);
 };
+const disabled = computed(() => {
+  return !(formState.userAccount && formState.password);
+});
 </script>
 
 <template>
@@ -72,13 +75,20 @@ const onFinishFailed = (errorInfo: any) => {
         <a-input-password v-model:value="formState.password" />
       </a-form-item>
 
-      <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
-        <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
+      <a-form-item name="remember" :wrapper-col="{ offset: 3, span: 16 }">
+        <a-checkbox v-model:checked="formState.remember">记住密码</a-checkbox>
       </a-form-item>
 
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-        <a-button type="primary" html-type="submit">Submit</a-button>
+        <a-button :disabled="disabled" type="primary" html-type="submit" class="login-form-button">
+          登录
+        </a-button>
+        Or
+        <a href="/user/register">去注册</a>
       </a-form-item>
+
+
+
     </a-form>
   </a-card>
 
@@ -90,7 +100,6 @@ const onFinishFailed = (errorInfo: any) => {
   .login-card{
     width: 30%;
     margin:10% auto;
-    //background-color: #efefef;
   }
 }
 </style>
