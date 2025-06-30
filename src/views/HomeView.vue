@@ -35,13 +35,12 @@ watch(current, () => {
   refreshData()
 })
 
-
-const value = ref<string>('');
+const value = ref<string>('')
 
 const onSearch = (searchValue: string) => {
-  console.log('use value', searchValue);
-  console.log('or use this.value', value.value);
-};
+  console.log('use value', searchValue)
+  console.log('or use this.value', value.value)
+}
 </script>
 
 <template>
@@ -49,7 +48,7 @@ const onSearch = (searchValue: string) => {
     <a-input-search
       v-model:value="value"
       placeholder="input search text"
-      style="width: 300px;margin-left: 60px"
+      style="width: 300px; margin-left: 60px"
       @search="onSearch"
     />
 
@@ -73,7 +72,7 @@ const onSearch = (searchValue: string) => {
 
         <a-card-meta :title="item.shareTitle" :description="item.shareDetail">
           <template #avatar>
-            <a-avatar src="https://joeschmoe.io/api/v1/random" />
+            <a-avatar :size="40">{{ item.userId }}</a-avatar>
           </template>
         </a-card-meta>
       </a-card>
@@ -95,7 +94,6 @@ const onSearch = (searchValue: string) => {
 
 <style>
 #home {
-
   .show {
     display: flex;
 

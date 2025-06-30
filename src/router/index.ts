@@ -49,6 +49,12 @@ const router = createRouter({
       component: () => import('@/views/share/ListMyShareView.vue'),
       props: true,
     },
+    // {
+    //   path: '/share/storeup',
+    //   name: '我的收藏',
+    //   component: () => import('@/views/share/ListMyShareView.vue'),
+    //   props: true,
+    // },
     {
       path: '/admin/review',
       name: '审核',
