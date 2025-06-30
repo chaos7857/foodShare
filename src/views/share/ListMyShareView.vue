@@ -33,7 +33,6 @@ const refreshData = async () => {
   const res = await listMyShareUsingPost({
     pageSize: pageSize.value,
     current: current.value,
-    reviewStatus: 0,
   })
   if (res.code === 0) {
     data.value = res.data.records
@@ -66,9 +65,13 @@ watch(current, () => {
           <img alt="example" :src="'http://localhost:10086/api/' + item.sharePicture" />
         </template>
 
+        <a-badge status="success" text="审核通过" v-if="item.lastReviewStatus===1"/>
+        <a-badge status="processing" text="审核中" v-else-if="item.lastReviewStatus===0"/>
+        <a-badge status="error" text="未通过" v-else/>
         <a-card-meta :title="item.shareTitle">
           <template #description>{{ item.shareDetail }}</template>
         </a-card-meta>
+
       </a-card>
     </div>
 

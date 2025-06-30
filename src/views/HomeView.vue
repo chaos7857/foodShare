@@ -14,7 +14,7 @@ const refreshData = async () => {
   const res = await listShareByRsUsingPost({
     pageSize: pageSize.value,
     current: current.value,
-    reviewStatus: 0,
+    reviewStatus: 1,
   })
   if (res.code === 0) {
     data.value = res.data.records
@@ -102,7 +102,6 @@ const storeup = (shareId)=>{
 #home {
   .show {
     display: flex;
-
     flex-wrap: wrap;
     padding: 20px;
     gap: 20px;
@@ -110,6 +109,7 @@ const storeup = (shareId)=>{
   .share {
     margin-left: 40px;
     width: 300px;
+    height: 100%;
   }
   .pageSize {
     width: 100%;

@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { InboxOutlined } from '@ant-design/icons-vue'
 import { message, type UploadProps } from 'ant-design-vue'
-import { addShareUsingPost } from '@/api/shareController.ts'
+import { addShareUsingPost, listMyShareUsingPost } from '@/api/shareController.ts'
+onMounted(async () => {
+  const tepm = await listMyShareUsingPost({
+    pageSize: 1,
+    current: 1,
+    reviewStatus: 0,
+  })
+})
 
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -31,14 +38,6 @@ const handleRemove: UploadProps['onRemove'] = () => {
 
 const beforeUpload: UploadProps['beforeUpload'] = async (file) => {
   fileList.value = [file]
-  console.log(fileList.value[0])
-  const res = await addShareUsingPost({},formState,file);
-  console.log(res)
-  if (res.code === 0) {
-    message.success('提交成功')
-  } else {
-    message.error(res.msg)
-  }
   return false
 }
 
