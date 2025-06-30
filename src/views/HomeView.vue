@@ -41,6 +41,11 @@ const onSearch = (searchValue: string) => {
   console.log('use value', searchValue)
   console.log('or use this.value', value.value)
 }
+
+
+const storeup = (shareId)=>{
+  message.info('storeup' + shareId)
+}
 </script>
 
 <template>
@@ -58,23 +63,24 @@ const onSearch = (searchValue: string) => {
         class="share"
         v-for="(item, index) in data"
         :key="index"
-        @click="router.push({ path: `/share/info/${item.id}` })"
       >
-        <template #cover>
-          <img alt="example" :src="'http://localhost:10086/api/' + item.sharePicture" />
+        <template #cover >
+          <img alt="example" :src="'http://localhost:10086/api/' + item.sharePicture"
+               @click="router.push({ path: `/share/info/${item.id}` })"/>
         </template>
+
+        <a-card-meta :title="item.shareTitle" :description="item.shareDetail"
+                     @click="router.push({ path: `/share/info/${item.id}` })">
+<!--          <template #avatar>-->
+<!--            <a-avatar :size="40">{{ item.userId }}</a-avatar>-->
+<!--          </template>-->
+        </a-card-meta>
 
         <template #actions>
-          <heart-outlined key="favorite" />
-          <ShareAltOutlined key="edit" />
-          <ellipsis-outlined key="ellipsis" />
+          <heart-outlined key="favorite" @click="storeup(item.id)"/>
+          <ShareAltOutlined key="edit" @click="message.info('链接已复制，快去分享吧')"/>
+          <ellipsis-outlined key="ellipsis" @click="message.info('其他功能正在完善中')"/>
         </template>
-
-        <a-card-meta :title="item.shareTitle" :description="item.shareDetail">
-          <template #avatar>
-            <a-avatar :size="40">{{ item.userId }}</a-avatar>
-          </template>
-        </a-card-meta>
       </a-card>
     </div>
 

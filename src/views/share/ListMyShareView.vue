@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import { LikeFilled, LikeOutlined, DislikeFilled, DislikeOutlined } from '@ant-design/icons-vue'
 import { onMounted, ref, watch } from 'vue'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { listMyShareUsingPost} from '@/api/shareController.ts'
+import { listMyShareUsingPost } from '@/api/shareController.ts'
 import { message } from 'ant-design-vue'
 import router from '@/router'
 dayjs.extend(relativeTime)
@@ -38,7 +38,7 @@ const refreshData = async () => {
   if (res.code === 0) {
     data.value = res.data.records
     total.value = res.data.total
-    console.log(data)
+    console.log(res)
   } else {
     message.error(res.msg)
   }
@@ -57,82 +57,63 @@ watch(current, () => {
 </script>
 
 <template>
-<div class="list-my-share">
-  <a-divider orientation="left">我的分享</a-divider>
-  <a-comment
-    class="shares"
-    v-for="(item, index) in data"
-    :key="index"
-    @click="router.push('/share/info/' + item.id)"
-  >
-    <template #actions>
-        <span key="comment-basic-like">
-          <a-tooltip title="Like">
-            <template v-if="action === 'liked'">
-              <LikeFilled @click="like" />
-            </template>
-            <template v-else>
-              <LikeOutlined @click="like" />
-            </template>
-          </a-tooltip>
-          <span style="padding-left: 8px; cursor: auto">
-            {{ likes }}
-          </span>
-        </span>
-      <span key="comment-basic-dislike">
-          <a-tooltip title="Dislike">
-            <template v-if="action === 'disliked'">
-              <DislikeFilled @click="dislike" />
-            </template>
-            <template v-else>
-              <DislikeOutlined @click="dislike" />
-            </template>
-          </a-tooltip>
-          <span style="padding-left: 8px; cursor: auto">
-            {{ dislikes }}
-          </span>
-        </span>
-      <span key="comment-basic-reply-to">Reply to</span>
-    </template>
-    <template #author
-    ><a>{{ item.shareTitle }}</a></template
-    >
-    <template #avatar>
-      <a-avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
-    </template>
-    <template #content>
-      <p>
-        {{ item.shareDetail }}
-      </p>
-    </template>
-    <template #datetime>
-      <a-tooltip :title="dayjs().format('YYYY-MM-DD HH:mm:ss')">
-        <span>{{ dayjs().fromNow() }}</span>
-      </a-tooltip>
-    </template>
-  </a-comment>
-  <div class="pageSize">
-    <a-pagination
-      v-model:current="current"
-      v-model:pageSize="pageSize"
-      show-size-changer
-      :total="total"
-      v-model:pageSizeOptions="pageSizeOptions"
-    />
+  <div id="list-my-share">
+    <a-divider orientation="left">我的分享</a-divider>
+
+    <div class="show">
+      <a-card hoverable v-for="(item, index) in data" :key="index" class="share">
+        <template #cover>
+          <img alt="example" :src="'http://localhost:10086/api/' + item.sharePicture" />
+        </template>
+
+        <a-card-meta :title="item.shareTitle">
+          <template #description>{{ item.shareDetail }}</template>
+        </a-card-meta>
+      </a-card>
+    </div>
+
+    <div class="pageSize">
+      <a-pagination
+        v-model:current="current"
+        v-model:pageSize="pageSize"
+        show-size-changer
+        :total="total"
+        v-model:pageSizeOptions="pageSizeOptions"
+        v-if="total !== '0'"
+      />
+      <a-empty v-else />
+    </div>
   </div>
-</div>
 </template>
 
 <style scoped>
-.shares {
-  margin-bottom: 2px;
-  transition: all 0.3s ease; /* 添加过渡效果使变化更平滑 */
-  padding-left: 24px;
-}
+#list-my-share {
+  .show {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    gap: 20px;
+  }
+  .share {
+    margin-left: 40px;
+    width: 300px;
+  }
+  .pageSize {
+    width: 100%;
+    margin-top: auto;
+    padding: 16px 0;
+    text-align: center;
+  }
+  .shares {
+    margin-bottom: 2px;
+    transition: all 0.3s ease; /* 添加过渡效果使变化更平滑 */
+    padding-left: 24px;
+  }
 
-.shares:hover {
-  background-color: #f5f5f5; /* 悬停时背景色变浅 */
-  transform: translateY(-2px); /* 轻微上浮 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+  .shares:hover {
+    background-color: #f5f5f5; /* 悬停时背景色变浅 */
+    transform: translateY(-2px); /* 轻微上浮 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+  }
 }
 </style>
