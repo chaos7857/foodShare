@@ -13,13 +13,14 @@ import com.cc.backend.model.vo.LoginUserVO;
 import com.cc.backend.service.UserService;
 import com.cc.backend.utils.ResultUtils;
 import com.cc.backend.utils.ThrowUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -45,6 +46,7 @@ public class UserController {
     @PostMapping("/login")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(loginRequest==null, ErrorCode.PARAMS_ERROR);
+        log.info(loginRequest.toString());
         String userAccount = loginRequest.getUserAccount();
         String userPassword = loginRequest.getPassword();
         User user = userService.userLogin(userAccount, userPassword, request);

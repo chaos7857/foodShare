@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 public class FilePathConfig {
     @Bean
     public String pictureDir() throws FileNotFoundException {
-        File path = new File(ResourceUtils.getURL("classpath:static").getPath());
+        File path = new File(ResourceUtils.getURL("classpath:").getPath());
         if(!path.exists()) {
             log.error("not found {}", path.getAbsolutePath());
             path = new File("src/main/resources");
@@ -23,6 +23,7 @@ public class FilePathConfig {
         if(!upload.exists()) {
             upload.mkdirs();
         }
+        log.error(upload.getAbsolutePath());
         return upload.getAbsolutePath();
     }
 

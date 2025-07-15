@@ -13,7 +13,7 @@ public class LoginUserVO implements Serializable {
     public String userAccount;
     public String userName;
     public String userAvatar;
-    public String userProfile;
+    public String userDescription;
     public String userRole;
     public Date createTime;
     public Date updateTime;

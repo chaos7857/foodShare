@@ -15,6 +15,7 @@ public class ShareVO implements Serializable {
     private Long userId;
     private Long shareClickNum;
     private Long shareLike;
+    private Integer lastReviewStatus;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
